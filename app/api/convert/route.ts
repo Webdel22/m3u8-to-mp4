@@ -11,12 +11,25 @@ import fs from 'fs';
 // Configure fluent-ffmpeg to use the static binary
 let binaryPath = ffmpegPath;
 
-// Fix for Next.js dev environment where ffmpeg-static might return a path in .next
+// Robust path detection for different environments (Local Dev, Vercel, etc.)
 if (!binaryPath || !fs.existsSync(binaryPath)) {
-    // Try node_modules directly
-    const possiblePath = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg.exe');
-    if (fs.existsSync(possiblePath)) {
-        binaryPath = possiblePath;
+    const isWindows = os.platform() === 'win32';
+    const ffmpegFileName = isWindows ? 'ffmpeg.exe' : 'ffmpeg';
+
+    const possiblePaths = [
+        // Try node_modules directly
+        path.join(process.cwd(), 'node_modules', 'ffmpeg-static', ffmpegFileName),
+        // Try absolute path if in a specific environment
+        path.join('/var/task', 'node_modules', 'ffmpeg-static', ffmpegFileName),
+        // Fallback to system ffmpeg if available
+        ffmpegFileName
+    ];
+
+    for (const p of possiblePaths) {
+        if (p === ffmpegFileName || fs.existsSync(p)) {
+            binaryPath = p;
+            break;
+        }
     }
 }
 
@@ -24,7 +37,7 @@ if (binaryPath) {
     ffmpeg.setFfmpegPath(binaryPath);
     console.log(`FFmpeg path set to: ${binaryPath}`);
 } else {
-    console.error("ffmpeg-static path not found", ffmpegPath);
+    console.error("ffmpeg-static binary not found in any expected location");
 }
 
 

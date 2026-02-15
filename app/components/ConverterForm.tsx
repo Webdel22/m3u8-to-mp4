@@ -1,11 +1,12 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Loader2, Download, AlertCircle, FileVideo, CheckCircle, ChevronDown, ChevronUp, HelpCircle, Shield } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function ConverterForm() {
+    const t = useTranslations('ConverterForm');
     const [url, setUrl] = useState('');
     const [jobId, setJobId] = useState<string | null>(null);
     const [status, setStatus] = useState<'idle' | 'pending' | 'processing' | 'completed' | 'error'>('idle');
@@ -85,15 +86,15 @@ export default function ConverterForm() {
             {/* Header with System Status */}
             <div className="space-y-3 text-center">
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
-                    M3U8 to MP4 Converter
+                    {t('header')}
                 </h2>
-                <p className="text-gray-400">Convert streaming videos to MP4 format instantly</p>
+                <p className="text-gray-400">{t('subHeader')}</p>
                 <div className="flex items-center justify-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
                     </span>
-                    <span className="text-xs text-emerald-400 font-medium">System Status: Operational</span>
+                    <span className="text-xs text-emerald-400 font-medium">{t('systemStatus')}</span>
                 </div>
             </div>
 
@@ -103,7 +104,7 @@ export default function ConverterForm() {
                         type="text"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        placeholder="Enter .m3u8 URL here..."
+                        placeholder={t('placeholder')}
                         className="w-full px-6 py-4 bg-gray-900/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-100 placeholder-gray-500 group-hover:border-gray-600"
                         aria-label="M3U8 stream URL"
                     />
@@ -119,25 +120,25 @@ export default function ConverterForm() {
                     className="flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 transition-colors"
                 >
                     <HelpCircle className="w-3.5 h-3.5" />
-                    <span>Need help finding an M3U8 link?</span>
+                    <span>{t('helpButton')}</span>
                     {showGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 </button>
 
                 {/* Collapsible Micro-Guide */}
                 {showGuide && (
                     <div className="p-4 bg-blue-500/5 border border-blue-500/15 rounded-lg space-y-3 text-sm text-gray-300">
-                        <p className="font-medium text-gray-200">Quick 4-step guide:</p>
+                        <p className="font-medium text-gray-200">{t('guideTitle')}</p>
                         <ol className="list-decimal list-inside space-y-1.5 text-gray-400">
-                            <li>Open the page with the video and press <kbd className="px-1.5 py-0.5 bg-gray-800 rounded text-xs font-mono text-gray-300">F12</kbd> to open DevTools</li>
-                            <li>{'Click the '}<strong className="text-gray-300">Network</strong>{' tab'}</li>
-                            <li>{'Type '}<code className="px-1.5 py-0.5 bg-gray-800 rounded text-xs font-mono text-blue-300">m3u8</code>{' in the filter box, then play the video'}</li>
-                            <li>{'Right-click the request ending in '}<code className="px-1.5 py-0.5 bg-gray-800 rounded text-xs font-mono text-blue-300">.m3u8</code>{' and copy the URL'}</li>
+                            <li>{t.rich('step1', { kbd: (c) => <kbd className="px-1.5 py-0.5 bg-gray-800 rounded text-xs font-mono text-gray-300">{c}</kbd> })}</li>
+                            <li>{t.rich('step2', { strong: (c) => <strong className="text-gray-300">{c}</strong> })}</li>
+                            <li>{t.rich('step3', { code: (c) => <code className="px-1.5 py-0.5 bg-gray-800 rounded text-xs font-mono text-blue-300">{c}</code> })}</li>
+                            <li>{t.rich('step4', { code: (c) => <code className="px-1.5 py-0.5 bg-gray-800 rounded text-xs font-mono text-blue-300">{c}</code> })}</li>
                         </ol>
                         <Link
                             href="/blog/how-to-find-m3u8-link"
                             className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium transition-colors"
                         >
-                            Read the full step-by-step guide
+                            {t('fullGuide')}
                             <span aria-hidden="true">&rarr;</span>
                         </Link>
                     </div>
@@ -145,19 +146,19 @@ export default function ConverterForm() {
 
                 {/* Checklist for Success */}
                 <div className="space-y-2 px-1">
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Checklist for success</p>
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t('checklistTitle')}</p>
                     <ul className="space-y-1.5">
                         <li className="flex items-center gap-2 text-sm text-gray-400">
                             <CheckCircle className={`w-3.5 h-3.5 flex-shrink-0 ${url.includes('.m3u8') ? 'text-emerald-400' : 'text-gray-600'}`} />
-                            <span>{'Link ends in '}<code className="px-1 py-0.5 bg-gray-800/50 rounded text-xs font-mono">.m3u8</code></span>
+                            <span>{t.rich('linkEndsIn', { code: (c) => <code className="px-1 py-0.5 bg-gray-800/50 rounded text-xs font-mono">{c}</code> })}</span>
                         </li>
                         <li className="flex items-center gap-2 text-sm text-gray-400">
                             <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 text-gray-600" />
-                            <span>Stream is publicly accessible (no login required)</span>
+                            <span>{t('publicStream')}</span>
                         </li>
                         <li className="flex items-center gap-2 text-sm text-gray-400">
                             <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 text-gray-600" />
-                            <span>Stable internet connection</span>
+                            <span>{t('stableInternet')}</span>
                         </li>
                     </ul>
                 </div>
@@ -166,7 +167,7 @@ export default function ConverterForm() {
                 <div className="flex items-start gap-2 px-1">
                     <Shield className="w-3.5 h-3.5 text-amber-500/70 mt-0.5 flex-shrink-0" />
                     <p className="text-xs text-gray-500">
-                        DRM-protected streams (Netflix, YouTube, Hulu) and CORS-restricted URLs cannot be converted.
+                        {t('drmWarning')}
                     </p>
                 </div>
 
@@ -178,10 +179,10 @@ export default function ConverterForm() {
                     {status === 'processing' || status === 'pending' ? (
                         <>
                             <Loader2 className="animate-spin w-5 h-5" />
-                            Converting...
+                            {t('converting')}
                         </>
                     ) : (
-                        'Start Conversion'
+                        t('convertButton')
                     )}
                 </button>
             </form>
@@ -189,8 +190,8 @@ export default function ConverterForm() {
             {/* Status Cards */}
             {status !== 'idle' && (
                 <div className={`p-6 rounded-xl border ${status === 'completed' ? 'bg-green-500/10 border-green-500/20' :
-                        status === 'error' ? 'bg-red-500/10 border-red-500/20' :
-                            'bg-blue-500/10 border-blue-500/20'
+                    status === 'error' ? 'bg-red-500/10 border-red-500/20' :
+                        'bg-blue-500/10 border-blue-500/20'
                     } transition-all duration-500`}>
 
                     <div className="flex items-center justify-between mb-4">
@@ -199,9 +200,9 @@ export default function ConverterForm() {
                                 status === 'error' ? <AlertCircle className="text-red-500 w-6 h-6" /> :
                                     <Loader2 className="text-blue-500 w-6 h-6 animate-spin" />}
                             <span className="font-medium text-gray-200 capitalize">
-                                {status === 'completed' ? 'Conversion Successful' :
-                                    status === 'error' ? 'Conversion Failed' :
-                                        'Processing Video...'}
+                                {status === 'completed' ? t('success') :
+                                    status === 'error' ? t('failed') :
+                                        t('processing')}
                             </span>
                         </div>
                         <span className="text-sm font-mono text-gray-400">{progress}%</span>
@@ -223,7 +224,7 @@ export default function ConverterForm() {
                             className="mt-4 flex items-center justify-center gap-2 w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
                         >
                             <Download className="w-5 h-5" />
-                            Download MP4
+                            {t('download')}
                         </a>
                     )}
 
@@ -239,7 +240,7 @@ export default function ConverterForm() {
             <div className="flex items-center justify-center gap-2 pt-2">
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800/50 border border-gray-700/50 rounded-full">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-                    <span className="text-xs text-gray-400 font-medium">Powered by FFmpeg</span>
+                    <span className="text-xs text-gray-400 font-medium">{t('poweredBy')}</span>
                 </div>
             </div>
         </div>
